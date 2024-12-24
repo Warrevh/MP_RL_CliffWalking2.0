@@ -1,0 +1,22 @@
+PARAMETERS Q-LEARNING ON CLIFFWALKING
+
+
+Parameters environment
+
+RenderMode: rgb_array
+monitor: False
+STORE_PATH: ./tmp/cliffwalking_test1/Q/test_09102024183148
+mean_number_ep: 100
+threshold: -13
+Parameters agent
+
+num_actions: 4
+num_states: 48
+Rand_Seed: 1
+plt_title: Q-learning
+epsilon: 1
+epsilon_min: 0.001
+epsilon_decay: 1
+learning_rate_alpha: 0.01
+gamma: 1
+num_episodes: 10000

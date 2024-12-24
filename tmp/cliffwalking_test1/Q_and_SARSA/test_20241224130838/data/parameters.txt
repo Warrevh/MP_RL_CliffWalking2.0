@@ -1,0 +1,26 @@
+PARAMETERS Q-LEARNING ON CLIFFWALKING
+
+
+Parameters environment
+
+RenderMode: rgb_array
+monitor: True
+STORE_PATH: ./tmp/cliffwalking_test1/Q_and_SARSA/test_20241224130838
+mean_number_ep: 100
+threshold_q: -13
+threshold_SARSA: -17
+replay_buffer_active: False
+replay_buffer_size: 1000
+batch_size: 32
+Parameters agent
+
+num_actions: 4
+num_states: 48
+Rand_Seed: 1
+epsilon: 0.1
+epsilon_min: 0.001
+rate_of_decay: 6
+learning_rate_alpha: 0.01
+gamma: 1
+num_episodes: 10000
+num_of_neurons: 100
