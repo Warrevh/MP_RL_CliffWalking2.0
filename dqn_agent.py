@@ -44,13 +44,13 @@ class DQN:
         #next_state_tensor = self.state_to_2d(new_state)
         reward_tensor = torch.tensor(reward, dtype=torch.float32)
 
-        q_values = self.q_network(state_tensor)[0]
+        current_q_values = self.q_network(state_tensor)[0]
+        current_q_value = current_q_values[action]
         with torch.no_grad():
             next_q_values = self.q_network(next_state_tensor)
             max_next_q_value = torch.max(next_q_values)
 
         target_q_value = reward_tensor + (self.gamma * max_next_q_value * (1 - done))
-        q_values[action] = target_q_value
 
         #if done:
         #   q_values[action] += self.alpha * (reward_tensor - q_values[action])
@@ -58,7 +58,7 @@ class DQN:
         #    q_values[action] += self.alpha * (
         #                reward + self.gamma * max_next_q_value - q_values[action])
 
-        loss = nn.MSELoss()(self.q_network(state_tensor)[0], q_values)
+        loss = nn.MSELoss()(current_q_value, target_q_value)
 
         self.optimizer.zero_grad()
         loss.backward()

@@ -2,7 +2,6 @@ import os
 import datetime as dt
 import numpy as np
 
-import cliffwalking_training
 from cliffwalking_training import run_training
 from data_handling import PLTLIB,Txt_File
 from q_agent import Q
@@ -20,7 +19,7 @@ os.makedirs(agent_path, exist_ok=True)
 
 env_parameters = {
     'RenderMode': 'rgb_array', #human, rgb_array
-    'monitor': True, #If rendermode = human then monitor must be False
+    'monitor': False, #If rendermode = human then monitor must be False
     'STORE_PATH': STORE_PATH,
     'mean_number_ep': 100,
     'threshold_q': -13,
@@ -44,7 +43,7 @@ agent_parameters = {
     'epsilon_min': 0.001,
     'rate_of_decay': 6,
     'learning_rate_alpha': 0.01,
-    'gamma': 1,
+    'gamma': 0.99,
     'num_episodes': 10000,
     'num_of_neurons': 100
 }
@@ -69,7 +68,7 @@ np.save(f'{agent_path}/q_learning_q_table.npy', q_policy.q_table)
 np.save(f'{agent_path}/SARSA_learning_q_table.npy', SARSA_policy.q_table)
 
 MyPlot = PLTLIB(agent_parameters, data_path)
-MyPlot.plot(q_tot_rewards,"Q-LEARNING")
+MyPlot.plot(q_tot_rewards, "Q-LEARNING")
 MyPlot.plot(SARSA_tot_rewards, "SARSA-LEARNING")
 MyPlot.plot2(q_tot_rewards, SARSA_tot_rewards, "Q vs SARSA")
 MyPlot.plot(dqn_tot_rewards,"DQN-learning")

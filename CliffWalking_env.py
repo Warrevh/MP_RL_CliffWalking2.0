@@ -8,6 +8,7 @@ from collections import deque
 class CliffWalkingEnv:
 
     def __init__(self, agent_type, par):
+        self.par = par
         self.STORE_PATH = par['STORE_PATH']
         self.RenderMode = par['RenderMode']
 
@@ -28,11 +29,12 @@ class CliffWalkingEnv:
     def one_rollout(self, agent):
         states, actions, next_action, rewards, new_states, dones = [], [], [], [], [], []
         state = self.env.reset()[0]
+        next_action = agent.get_action(state, self.env)
         terminated, truncated = False, False
         done = terminated or truncated
 
         while not done:
-            action = agent.get_action(state, self.env)
+            action = next_action #agent.get_action(state, self.env)
             new_state, reward, terminated, truncated, _ = self.env.step(action)
             next_action = agent.get_action(new_state, self.env)
 
@@ -42,15 +44,16 @@ class CliffWalkingEnv:
 
             #agent.q_table[state][action] += agent.alpha * (reward + agent.gamma * agent.q_table[new_state][next_action] - agent.q_table[state][action])
 
-            self.replay_buffer.append((state, action, next_action, reward, new_state, done))
+            if self.replay_buffer_active:
+                self.replay_buffer.append((state, action, next_action, reward, new_state, done))
 
-            if len(self.replay_buffer) > self.batch_size and self.replay_buffer_active:
+                if len(self.replay_buffer) == self.par['replay_buffer_size'] :
 
-                samples = random.sample(self.replay_buffer,self.batch_size)
-
-                for experience in samples:
-                    s, a, n_a, r, n_s, d = experience
-                    agent.update_network(s, a, n_a, r, n_s, d)
+                    samples = random.sample(self.replay_buffer,self.batch_size)
+                    
+                    for experience in samples:
+                        s, a, n_a, r, n_s, d = experience
+                        agent.update_network(int(s),int(a), int(n_a), int(r), int(n_s), int(d))
 
             states.append(state)
             actions.append(action)
@@ -59,7 +62,7 @@ class CliffWalkingEnv:
             dones.append(done)
             state = new_state
 
-        #agent.decay_epsilon()
+        agent.decay_epsilon()
         return states, actions, rewards, new_states, dones
 
 

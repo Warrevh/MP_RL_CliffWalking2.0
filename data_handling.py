@@ -25,8 +25,9 @@ class PLTLIB:
         plt.axhline(y=self.optimal_reward, color='black', linestyle=':', linewidth=2, label='Optimal return')
 
         plt.title(title)
-        plt.xlabel('Number of episodes')
+        plt.xlabel('Number of iterations')
         plt.ylabel('Cumulative reward (Return)')
+        plt.ylim(bottom=-500)
         plt.legend()
 
         plt.text(0.95, 0.05,
@@ -35,7 +36,6 @@ class PLTLIB:
 
         plt.savefig(self.store_path + f"/{title}.pdf")
         plt.show()
-
 
     def plot2(self, rewards_1, rewards_2, title):
 
@@ -53,6 +53,7 @@ class PLTLIB:
         plt.title(title)
         plt.xlabel('Number of iterations')
         plt.ylabel('Cumulative reward (Return)')
+        plt.ylim(bottom=-500)
         plt.legend()
 
         plt.text(0.95, 0.05,
@@ -75,6 +76,35 @@ class PLTLIB:
                 mean = np.mean(rewards[i - self.size_avg:i])
                 rewards_rma.append(mean)
         return rewards_rma
+
+    def sub_plot(self, ax, rewards, title):
+        n_it = np.arange(len(rewards))
+
+        rewards_rma = self.get_rma(rewards)
+
+        ax.plot(n_it, rewards, color= self.color,alpha= self.transparency, label='Return')
+        ax.plot(n_it,rewards_rma, color= self.color_rma, label= 'Return_'+str(self.size_avg)+'_rma')
+
+        ax.axhline(y=self.optimal_reward, color='black', linestyle=':', linewidth=2, label='Optimal return')
+
+        ax.set_title(title)
+        ax.set_xlabel('Number of episodes')
+        ax.set_ylabel('Cumulative reward (Return)')
+        ax.set_ylim(bottom=-500)
+        ax.legend()
+
+    def fig2(self, rewards_1, rewards_2):
+
+        fig, axs = plt.subplots(1, 2, figsize=(12, 6))  # 1 row, 2 columns
+
+        # Use the function to plot on each subplot
+        self.sub_plot(axs[0], rewards_1, "Q-learning without epsilon decay")
+        self.sub_plot(axs[1], rewards_2, "Q-learning with epsilon decay")
+
+        # Adjust layout and display the figure
+        plt.tight_layout()
+        plt.show()
+
 
 class Txt_File:
     def __init__(self,store_path):
